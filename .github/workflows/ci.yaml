@@ -28,11 +28,6 @@ jobs:
           cargo --version --verbose
           rustc --version
           cargo clippy --version
-      # - name: Lint
-      #   run: |
-      #     cd toolbox
-      #     cargo fmt -- --check
-      #     cargo lint -- -D warnings
       - name: Test
         run: |
           cd toolbox
@@ -43,3 +38,23 @@ jobs:
           cd toolbox
           cargo build --release
 
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Update local toolchain
+        run: |
+          rustup update
+          rustup component add clippy
+          rustup install nightly
+      - name: Toolchain info
+        run: |
+          cargo --version --verbose
+          rustc --version
+          cargo clippy --version
+      - name: Lint
+        run: |
+          cd toolbox
+          cargo fmt -- --check
+          cargo lint -- -D warnings
