@@ -1,9 +1,9 @@
-use std::env;
 use colored::*;
+use std::env;
 
 fn to_bits(i: u64) -> String {
     //needs zero padding
-    format!{"{:064b}", i}.to_string()
+    format! {"{:064b}", i}
 }
 
 fn trim<'a>(s: &'a str, p: &'a str) -> &'a str {
@@ -23,8 +23,7 @@ fn idx_of_1s(num: u64) -> Vec<u64> {
             r.push(i);
         }
     }
-    
-    return r;
+    r
 }
 
 fn main() {
@@ -36,8 +35,8 @@ fn main() {
             println!("At least one hex value argument is needed.");
         }
         _ => {
-            for i in 1..args.len() {
-                let trimmed_string: &str = trim(args[i].as_str(), "0x");
+            for arg in args.iter().skip(1) {
+                let trimmed_string: &str = trim(arg.as_str(), "0x");
                 let number = hex_atoi(trimmed_string);
                 // to error checking on number here.
                 match number {
@@ -58,8 +57,11 @@ fn main() {
                             let cursor_pos: u64 = 63 - i;
                             if cursor_pos == bit {
                                 s.push('^');
-                                if ones.is_empty() { break; }
-                                else { bit = ones.pop().unwrap(); }
+                                if ones.is_empty() {
+                                    break;
+                                } else {
+                                    bit = ones.pop().unwrap();
+                                }
                             } else {
                                 s.push(' ');
                             }
@@ -67,7 +69,7 @@ fn main() {
                         println!("{}", to_bits(value));
                         println!("{}", map.blue());
                         println!("{}\n", s.blue().bold());
-                    },
+                    }
                 }
             }
         }
@@ -157,4 +159,3 @@ mod tests {
         assert_eq!(r, 0x1);
     }
 }
-
