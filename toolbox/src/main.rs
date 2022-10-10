@@ -1,4 +1,5 @@
 use std::env;
+use colored::*;
 
 fn to_bits(i: u64) -> String {
     //needs zero padding
@@ -11,6 +12,19 @@ fn trim<'a>(s: &'a str, p: &'a str) -> &'a str {
 
 fn hex_atoi(s: &str) -> Result<u64, std::num::ParseIntError> {
     u64::from_str_radix(s, 16)
+}
+
+fn idx_of_1s(num: u64) -> Vec<u64> {
+    let mut r: Vec<u64> = vec![];
+
+    for i in 0..64 {
+        let lsb: u64 = (num >> i) & 1;
+        if lsb == 1 {
+            r.push(i);
+        }
+    }
+    
+    return r;
 }
 
 fn main() {
@@ -28,7 +42,32 @@ fn main() {
                 // to error checking on number here.
                 match number {
                     Err(why) => println!("Input error value was not a hex string. {}.", why),
-                    Ok(value) => println!("{}\n{}\n", to_bits(value), map),
+                    Ok(value) => {
+                        let mut ones: Vec<u64> = idx_of_1s(value);
+                        //ones.reverse();
+
+                        let mut s: String = String::new();
+                        let mut bit: u64 = 65;
+
+                        if !ones.is_empty() {
+                            bit = ones.pop().unwrap();
+                        }
+
+                        for i in 0..64 {
+                            // ones is ordered, so this will only require one pass.
+                            let cursor_pos: u64 = 63 - i;
+                            if cursor_pos == bit {
+                                s.push('^');
+                                if ones.is_empty() { break; }
+                                else { bit = ones.pop().unwrap(); }
+                            } else {
+                                s.push(' ');
+                            }
+                        }
+                        println!("{}", to_bits(value));
+                        println!("{}", map.blue());
+                        println!("{}\n", s.blue().bold());
+                    },
                 }
             }
         }
