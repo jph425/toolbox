@@ -22,19 +22,27 @@ jobs:
           rustup install nightly
 
       - name: Toolchain info
-      - run: |
+        run: |
           cargo --version --verbose
           rustc --version
           cargo clippy --version
 
-          #      - name: Lint
-          #        run: |
-          #          cd toolbox
-          #          cargo lint
+      - name: Lint
+        run: |
+          cd toolbox
+          cargo fmt -- --check
+          cargo lint -- -D warnings
 
       - name: Test
         run: |
           cd toolbox
-          cargo test
+          cargo check
+          cargo test --all
+
+      - name: build
+        run: |
+          cd toolbox
+          cargo build --release
+
 
 
